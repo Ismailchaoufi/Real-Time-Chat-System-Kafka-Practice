@@ -1,0 +1,39 @@
+package com.chat.producer.chatproducerservice.config;
+
+import com.chat.producer.chatproducerservice.model.ChatMessage;
+import com.fasterxml.jackson.databind.JsonSerializer;
+import com.fasterxml.jackson.databind.ser.std.StringSerializer;
+import org.apache.kafka.clients.producer.ProducerConfig;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.kafka.core.DefaultKafkaProducerFactory;
+import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.kafka.core.ProducerFactory;
+
+import java.util.HashMap;
+import java.util.Map;
+
+@Configuration
+public class KafkaProducerConfig {
+
+    @Bean
+    public ProducerFactory<String, ChatMessage> producerFactory() {
+        Map<String, Object> config = new HashMap<>();
+        config.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
+        config.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
+        config.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JsonSerializer.class);
+
+        // ── Kafka concept: Idempotent producer ──────────────────────────────
+        // Prevents duplicate messages if broker ACK is lost and producer retries
+        config.put(ProducerConfig.ENABLE_IDEMPOTENCE_CONFIG, true);
+        config.put(ProducerConfig.ACKS_CONFIG, "all");  // wait for all replicas
+        config.put(ProducerConfig.RETRIES_CONFIG, 3);
+
+        return new DefaultKafkaProducerFactory<>(config);
+    }
+
+    @Bean
+    public KafkaTemplate<String, ChatMessage> kafkaTemplate() {
+        return new KafkaTemplate<>(producerFactory());
+    }
+}
