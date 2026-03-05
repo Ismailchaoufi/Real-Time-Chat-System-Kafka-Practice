@@ -2,8 +2,20 @@ server:
   port: 8082
 
 spring:
+  application:
+    name: chat-producer-service
   kafka:
-    bootstrap-servers: localhost:9092
+    bootstrap-servers: ${KAFKA_SERVERS:localhost:9092}
     producer:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      properties:
+        spring.json.add.type.headers: false
+
+jwt:
+  secret: ${JWT_SECRET:mySecretKeyThatIsAtLeast32CharactersLong!}
+
+logging:
+  level:
+    com.chat.chatservice: DEBUG
+    org.springframework.web.socket: INFO

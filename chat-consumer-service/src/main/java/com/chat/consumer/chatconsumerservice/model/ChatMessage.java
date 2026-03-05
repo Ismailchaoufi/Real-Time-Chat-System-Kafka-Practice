@@ -1,24 +1,19 @@
 package com.chat.consumer.chatconsumerservice.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
+import lombok.*;
 
-import java.time.LocalDateTime;
-
-// ChatMessage.java
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class ChatMessage {
-    private String messageId;      // UUID
+    private String id;
+    private String roomId;
     private String senderId;
-    private String recipientId;    // or roomId for group chat
+    private String sender;
+    private String displayName;
+    private String avatarUrl;
     private String content;
-    private MessageType type;      // TEXT, IMAGE, JOIN, LEAVE
-    private LocalDateTime timestamp;
-
-    public enum MessageType { TEXT, IMAGE, JOIN, LEAVE }
-    // constructors, getters, setters
+    private String timestamp;
+    private String type;  // Stored as String to avoid enum deserialization issues across services
 }
