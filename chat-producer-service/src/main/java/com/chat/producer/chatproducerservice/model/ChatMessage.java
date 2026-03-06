@@ -19,11 +19,11 @@ public class ChatMessage {
     private MessageType type;
 
     public enum MessageType {
-        CHAT,       // Regular message
-        JOIN,       // User joined room
-        LEAVE,      // User left room
-        TYPING,     // User is typing indicator
-        DELIVERED,  // Message delivered receipt
-        READ        // Message read receipt
+        CHAT,
+        JOIN,
+        LEAVE,
+        TYPING,
+        DELIVERED,
+        READ
     }
 }
