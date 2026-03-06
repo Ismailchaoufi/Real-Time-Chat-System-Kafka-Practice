@@ -75,78 +75,78 @@ services:
       timeout: 5s
       retries: 5
 
-  auth-service:
-    build: ./auth-service
-    container_name: auth-service
-    ports:
-      - "8081:8081"
-    depends_on:
-      postgres:
-        condition: service_healthy
-    environment:
-      DB_HOST: postgres
-      DB_NAME: chatdb
-      DB_USER: postgres
-      DB_PASSWORD: postgres
-      JWT_SECRET: mySecretKeyThatIsAtLeast32CharactersLong!
-      JWT_EXPIRATION_MS: 86400000
-    healthcheck:
-      test: [ "CMD", "wget", "--spider", "-q", "http://localhost:8081/api/auth/health" ]
-      interval: 15s
-      timeout: 10s
-      retries: 5
-
-  chat-producer-service:
-    build: ./chat-producer-service
-    container_name: chat-service
-    ports:
-      - "8082:8082"
-    depends_on:
-      kafka:
-        condition: service_healthy
-    environment:
-      KAFKA_SERVERS: kafka:9092
-      JWT_SECRET: mySecretKeyThatIsAtLeast32CharactersLong!
-    healthcheck:
-      test: [ "CMD", "wget", "--spider", "-q", "http://localhost:8082/api/chat/health" ]
-      interval: 15s
-      timeout: 10s
-      retries: 5
-
-  chat-consumer-service:
-    build: ./chat-consumer-service
-    container_name: message-service
-    ports:
-      - "8083:8083"
-    depends_on:
-      kafka:
-        condition: service_healthy
-      mongodb:
-        condition: service_healthy
-    environment:
-      KAFKA_SERVERS: kafka:9092
-      MONGO_HOST: mongodb
-      MONGO_DB: chatdb
-    healthcheck:
-      test: [ "CMD", "wget", "--spider", "-q", "http://localhost:8083/api/messages/health" ]
-      interval: 15s
-      timeout: 10s
-      retries: 5
-
-  api-gateway:
-    build: ./api-gateway
-    container_name: api-gateway
-    ports:
-      - "8080:8080"
-    depends_on:
-      auth-service:
-        condition: service_healthy
-      chat-producer-service:
-        condition: service_healthy
-      chat-consumer-service:
-        condition: service_healthy
-    environment:
-      JWT_SECRET: mySecretKeyThatIsAtLeast32CharactersLong!
+#  auth-service:
+#    build: ./auth-service
+#    container_name: auth-service
+#    ports:
+#      - "8081:8081"
+#    depends_on:
+#      postgres:
+#        condition: service_healthy
+#    environment:
+#      DB_HOST: postgres
+#      DB_NAME: chatdb
+#      DB_USER: postgres
+#      DB_PASSWORD: postgres
+#      JWT_SECRET: mySecretKeyThatIsAtLeast32CharactersLong!
+#      JWT_EXPIRATION_MS: 86400000
+#    healthcheck:
+#      test: [ "CMD", "wget", "--spider", "-q", "http://localhost:8081/api/auth/health" ]
+#      interval: 15s
+#      timeout: 10s
+#      retries: 5
+#
+#  chat-producer-service:
+#    build: ./chat-producer-service
+#    container_name: chat-service
+#    ports:
+#      - "8082:8082"
+#    depends_on:
+#      kafka:
+#        condition: service_healthy
+#    environment:
+#      KAFKA_SERVERS: kafka:9092
+#      JWT_SECRET: mySecretKeyThatIsAtLeast32CharactersLong!
+#    healthcheck:
+#      test: [ "CMD", "wget", "--spider", "-q", "http://localhost:8082/api/chat/health" ]
+#      interval: 15s
+#      timeout: 10s
+#      retries: 5
+#
+#  chat-consumer-service:
+#    build: ./chat-consumer-service
+#    container_name: message-service
+#    ports:
+#      - "8083:8083"
+#    depends_on:
+#      kafka:
+#        condition: service_healthy
+#      mongodb:
+#        condition: service_healthy
+#    environment:
+#      KAFKA_SERVERS: kafka:9092
+#      MONGO_HOST: mongodb
+#      MONGO_DB: chatdb
+#    healthcheck:
+#      test: [ "CMD", "wget", "--spider", "-q", "http://localhost:8083/api/messages/health" ]
+#      interval: 15s
+#      timeout: 10s
+#      retries: 5
+#
+#  api-gateway:
+#    build: ./api-gateway
+#    container_name: api-gateway
+#    ports:
+#      - "8080:8080"
+#    depends_on:
+#      auth-service:
+#        condition: service_healthy
+#      chat-producer-service:
+#        condition: service_healthy
+#      chat-consumer-service:
+#        condition: service_healthy
+#    environment:
+#      JWT_SECRET: mySecretKeyThatIsAtLeast32CharactersLong!
 
 volumes:
   postgres_data:
